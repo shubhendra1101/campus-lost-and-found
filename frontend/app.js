@@ -1,5 +1,5 @@
 const itemsContainer = document.getElementById("items-container");
-const API_URL = "http://localhost:5000/api/items";
+const API_URL = "https://campus-lost-and-found-r8vm.onrender.com/api/items";
 
 // --- NEW FORM LOGIC ---
 const toggleBtn = document.getElementById("toggle-form-btn");
