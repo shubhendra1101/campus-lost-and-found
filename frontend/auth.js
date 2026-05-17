@@ -36,6 +36,8 @@ loginForm.addEventListener("submit", async (e) => {
     if (response.ok) {
       // Save token to browser and redirect to dashboard
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.user.id);
+      localStorage.setItem("userRole", data.user.role);
       window.location.href = "index.html";
     } else {
       alert(data.error);

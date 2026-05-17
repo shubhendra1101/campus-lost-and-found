@@ -3,29 +3,29 @@ const { calculateMatchScore } = require("../services/matchingService");
 const { extractKeywords } = require("../utils/textProcessor");
 
 exports.createItem = async (req, res) => {
-    try {
-        const { title, description, category, location, status } = req.body;
-        const combinedText = `${title} ${description}`;
-        const autoKeywords = extractKeywords(combinedText);
+  try {
+    const { title, description, category, location, status } = req.body;
+    const combinedText = `${title} ${description}`;
+    const autoKeywords = extractKeywords(combinedText);
 
-        const imageUrl = req.file ? req.file.path : null;
+    const imageUrl = req.file ? req.file.path : null;
 
-        const newItem = new Item({ 
-            title, 
-            description, 
-            category, 
-            location, 
-            status, 
-            keywords: autoKeywords,
-            imageUrl: imageUrl,
-            postedBy: req.user.id 
-        });
-        
-        await newItem.save();
-        res.status(201).json(newItem);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    const newItem = new Item({
+      title,
+      description,
+      category,
+      location,
+      status,
+      keywords: autoKeywords,
+      imageUrl: imageUrl,
+      postedBy: req.user.id,
+    });
+
+    await newItem.save();
+    res.status(201).json(newItem);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 exports.getItems = async (req, res) => {
@@ -91,7 +91,7 @@ exports.updateItemStatus = async (req, res) => {
     const item = await Item.findById(req.params.id);
     if (!item) return res.status(404).json({ error: "Item not found" });
 
-    if (item.postedBy.toString() !== req.user.id) {
+    if (item.postedBy.toString() !== req.user.id && req.user.role !== "admin") {
       return res
         .status(403)
         .json({ error: "Not authorized to update this item" });
@@ -101,6 +101,25 @@ exports.updateItemStatus = async (req, res) => {
     await item.save();
 
     res.status(200).json(item);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.deleteItem = async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ error: "Item not found" });
+
+    // Authorization Guard: Allow deletion if the user is the owner OR if they are an Admin
+    if (item.postedBy.toString() !== req.user.id && req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ error: "Not authorized to delete this item" });
+    }
+
+    await Item.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Item deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
