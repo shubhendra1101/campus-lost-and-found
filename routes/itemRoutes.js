@@ -6,6 +6,7 @@ const {
   searchItems,
   findMatches,
   updateItemStatus,
+  deleteItem,
 } = require("../controllers/itemController");
 const { protect } = require("../middleware/authMiddleware");
 const upload = require("../config/cloudinary");
@@ -15,6 +16,5 @@ router.get("/", getItems);
 router.get("/search", searchItems);
 router.get("/match/:id", findMatches);
 router.patch("/:id/status", protect, updateItemStatus);
-router.delete("/:id", protect, deleteItem);
 
 module.exports = router;
