@@ -16,5 +16,6 @@ router.get("/", getItems);
 router.get("/search", searchItems);
 router.get("/match/:id", findMatches);
 router.patch("/:id/status", protect, updateItemStatus);
+router.delete("/:id", protect, deleteItem);
 
 module.exports = router;
