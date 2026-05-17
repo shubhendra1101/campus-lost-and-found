@@ -1,4 +1,4 @@
-const API_URL = "https://campus-lost-and-found-r8vm.onrender.com/api/items";
+const API_URL = "https://campus-lost-and-found-r8vm.onrender.com/api/auth";
 
 const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");
